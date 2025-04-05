@@ -1,0 +1,108 @@
+# class ItemactAdmin(admin.ModelAdmin):
+#     list_display = ('codigo', 'total_entradas', 'total_salidas', 'total_cantidad')
+
+#     def get_queryset(self, request):
+#         # Ejecutar la consulta SQL personalizada
+#         with connection.cursor() as cursor:
+#             cursor.execute("""
+#                 SELECT
+#                     codigo,
+#                     COALESCE(SUM(qty_ipdet), 0) AS total_entradas,
+#                     COALESCE(SUM(qty_orderdet), 0) AS total_salidas
+#                 FROM inventory_itemact
+#                 GROUP BY codigo
+#                 ORDER BY codigo
+#             """)
+#             result_list = cursor.fetchall()
+
+#         # Convertir los resultados en una lista de diccionarios
+#         result_list = [
+#             {'codigo': row[0], 'total_entradas': row[1], 'total_salidas': row[2]}
+#             for row in result_list
+#         ]
+#         return result_list
+
+#     def total_entradas(self, obj):
+#         return obj.get('total_entradas', 0)
+
+#     def total_salidas(self, obj):
+#         return obj.get('total_salidas', 0)
+
+#     def total_cantidad(self, obj):
+#         return self.total_entradas(obj) + self.total_salidas(obj)
+
+#     total_entradas.short_description = 'Total Entradas'
+#     total_salidas.short_description = 'Total Salidas'
+#     total_cantidad.short_description = 'Total Cantidad'
+
+# admin.site.register(Itemact, ItemactAdmin)
+
+
+
+# @admin.action(description='Mostrar sumatorias')
+# def mostrar_sumatorias(modeladmin, request, queryset):
+#     total_qty_ipdet = queryset.aggregate(total_ipdet=Sum('qty_ipdet'))['total_ipdet']
+#     total_qty_orderdet = queryset.aggregate(total_orderdet=Sum('qty_orderdet'))['total_orderdet']
+
+#     if total_qty_ipdet is None:
+#         total_qty_ipdet = 0
+#     if total_qty_orderdet is None:
+#         total_qty_orderdet = 0
+
+#     modeladmin.message_user(request, f"Total qty_ipdet: {total_qty_ipdet}, Total qty_orderdet: {total_qty_orderdet}")
+
+
+# class ItemactAdmin(admin.ModelAdmin):
+#     list_display = ('codigo', 'get_total_entradas', 'get_total_salidas', 'get_total_cantidad')
+
+#     def get_queryset(self, request):
+#         # Obtén el QuerySet base
+#         qs = super().get_queryset(request)
+        
+#         # Agrupa por 'codigo' y calcula los totales
+#         # Agrega los cálculos de totales a cada instancia del modelo
+#         qs = qs.values('codigo').annotate(
+#             total_entradas=Sum('qty_ipdet'),
+#             total_salidas=Sum('qty_orderdet')
+#         ).order_by('codigo')
+        
+#         return qs
+
+#     def get_total_entradas(self, obj):
+#         # Usa el valor agregado en el diccionario devuelto por get_queryset
+#         return obj.get('total_entradas', 0)
+
+#     def get_total_salidas(self, obj):
+#         # Usa el valor agregado en el diccionario devuelto por get_queryset
+#         return obj.get('total_salidas', 0)
+
+#     def get_total_cantidad(self, obj):
+#         # Calcula la cantidad total usando los valores agregados
+#         return self.get_total_entradas(obj) + self.get_total_salidas(obj)
+
+#     get_total_entradas.short_description = 'Total Entradas'
+#     get_total_salidas.short_description = 'Total Salidas'
+#     get_total_cantidad.short_description = 'Total Cantidad'
+
+# admin.site.register(Itemact, ItemactAdmin)
+
+
+
+#     def total_qty_ipdet(self, obj):
+#         # Ejecutar la consulta SQL personalizada para agrupar por 'codigo'
+#         with connection.cursor() as cursor:
+#             cursor.execute("""
+#                 SELECT
+#                     SUM(qty_ipdet)
+#                 FROM inventory_itemact
+#                 WHERE codigo = %s
+#                 GROUP BY codigo
+#             """, [obj.codigo])
+#             result = cursor.fetchone()
+
+#         # Si se encuentra un resultado, devolver el total, de lo contrario, devolver 0
+#         return result[0] if result else 0
+
+#     total_qty_ipdet.short_description = 'Total Entradas (qty_ipdet)'
+
+# admin.site.register(Itemact, ItemactAdmin)
