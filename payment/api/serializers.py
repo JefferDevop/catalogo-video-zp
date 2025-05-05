@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 class ItemSerializer(ModelSerializer):
     class Meta:
         model = Item
-        fields = ['title', 'quantity', 'unit_price', 'currency_id', 'codigo', 'description']
+        fields = ['title', 'talla', 'quantity', 'unit_price', 'currency_id', 'codigo', 'description']
 
     # def create(self, validated_data):         
     #     codigo = validated_data.pop('id', None)     

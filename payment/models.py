@@ -36,6 +36,7 @@ class Payment(models.Model):
 class Item(models.Model):
     payment = models.ForeignKey(Payment, related_name='items', on_delete=models.CASCADE)
     codigo = models.CharField(max_length=255, default='', verbose_name="Código")
+    talla = models.CharField(max_length=30, null=True, blank=True, verbose_name="Talla")
     description = models.CharField(max_length=255, blank=True, null=True, default='', verbose_name="Descripción")
     title = models.CharField(max_length=255, verbose_name="Nombre")
     quantity = models.IntegerField(verbose_name="Cantidad")

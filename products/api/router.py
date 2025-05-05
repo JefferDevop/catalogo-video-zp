@@ -6,7 +6,7 @@ router_product = DefaultRouter()
 router_productOE = DefaultRouter()
 router_product_category = DefaultRouter()
 router_gallery = DefaultRouter()
-router_product_attribute = DefaultRouter()
+# router_product_attribute = DefaultRouter()
 
 router_category.register(
     prefix='category', basename='category', viewset=CategoryApiViewSet   

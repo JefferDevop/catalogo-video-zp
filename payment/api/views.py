@@ -67,8 +67,7 @@ def generate_external_reference(email):
 
 
 def create_payment_and_items(response_data, client_ip, address):
- 
-
+    
     items_data = response_data.get('items', [])  
     total_amount = sum(item['unit_price'] * item['quantity'] for item in items_data)
 
@@ -89,6 +88,8 @@ def create_payment_and_items(response_data, client_ip, address):
         'address': address,
         'external_reference': response_data.get('external_reference', 'default-external-reference'),
     }
+
+    print('payment_data', payment_data)
 
     serializer = PaymentSerializer(data=payment_data)
 
@@ -111,6 +112,7 @@ class PaymentApiViewSet(viewsets.ViewSet):
         data = request.data
         items_data = data.get('items', [])
         address = data.get('address')
+        wholesale = data.get('wholesale', False)
         client_ip = get_client_ip(request) 
 
         # productos_sin_stock = []
@@ -162,8 +164,9 @@ class PaymentApiViewSet(viewsets.ViewSet):
                 "description": product.get("description", "Descripción del producto"),
                 "picture_url": product.get("images", "https://example.com/default-image.jpg"),
                 "quantity": product.get("quantity", 1), 
+                "talla": product.get("talla"),
                 "currency_id": "COP",
-                "unit_price": float(product.get("price1", 0)),         
+                "unit_price": float(product.get("price2" if wholesale else "price1", 0)),        
             }
 
             items.append(item) 
@@ -181,17 +184,17 @@ class PaymentApiViewSet(viewsets.ViewSet):
             envio_price = 0  # Valor por defecto si address_instance no es válido
 
         # Agregar el producto de envío a los items
-        envio_item = {
-            "id": "envio",
-            "title": "Costo de envío",
-            "description": f"Envío a {city.capitalize()}" if address_instance else "Envío",
-            "quantity": 1,
-            "currency_id": "COP",
-            "unit_price": envio_price,
-        }
+        # envio_item = {
+        #     "id": "envio",
+        #     "title": "Costo de envío",
+        #     "description": f"Envío a {city.capitalize()}" if address_instance else "Envío",
+        #     "quantity": 1,
+        #     "currency_id": "COP",
+        #     "unit_price": envio_price,
+        # }
 
     
-        items.append(envio_item)  # Añadir el envío a los items
+        # items.append(envio_item)  # Añadir el envío a los items
   
         
         payload = {
