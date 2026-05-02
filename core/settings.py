@@ -10,6 +10,17 @@ from decouple import config
 
 
 
+
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = config('API_SECRET_KEY')
+DEBUG = True
+ALLOWED_HOSTS = ["*"]
+
+
+
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
@@ -29,12 +40,6 @@ from decouple import config
 
 
 
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = config('API_SECRET_KEY')
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
 
 
 SHARED_APPS = (
